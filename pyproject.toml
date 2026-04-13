@@ -36,6 +36,7 @@ fmsr-mcp-server = "servers.fmsr.main:main"
 tsfm-mcp-server = "servers.tsfm.main:main"
 wo-mcp-server = "servers.wo.main:main"
 vibration-mcp-server = "servers.vibration.main:main"
+train-lmtrain = "llm.lmtrain:main"
 
 
 [dependency-groups]
@@ -49,6 +50,11 @@ dev = [
 tsfm = [
     "torch>=2.0",
     "transformers>=4.40",
+]
+lmtrain = [
+    "torch>=2.0",
+    "transformers>=4.40",
+    "datasets>=2.19",
 ]
 
 [tool.uv]
