@@ -17,6 +17,9 @@ import sys
 from pathlib import Path
 
 _DEFAULT_MODEL = "watsonx/meta-llama/llama-4-maverick-17b-128e-instruct-fp8"
+_LMTRAIN_MODEL_PATH = Path("models/lmtrain")
+_LMTRAIN_THRESHOLD = 0.5
+_THINK_TRIGGER = "</think>"
 
 _LOG_FORMAT = "%(asctime)s  %(levelname)-8s  %(name)s  %(message)s"
 _LOG_DATE_FORMAT = "%H:%M:%S"
@@ -107,11 +110,21 @@ def _build_llm(model_id: str):
     """Instantiate the LiteLLMBackend for the given model_id."""
     try:
         from llm.litellm import LiteLLMBackend
+        from llm.lmtrain import ReasonRoutingLLMBackend, ThinkModeClassifier
     except ImportError as exc:
         print(f"error: {exc}", file=sys.stderr)
         sys.exit(1)
     try:
-        return LiteLLMBackend(model_id=model_id)
+        llm = LiteLLMBackend(model_id=model_id)
+        if not _LMTRAIN_MODEL_PATH.exists():
+            return llm
+        classifier = ThinkModeClassifier.load(str(_LMTRAIN_MODEL_PATH))
+        return ReasonRoutingLLMBackend(
+            base_llm=llm,
+            classifier=classifier,
+            threshold=_LMTRAIN_THRESHOLD,
+            think_trigger=_THINK_TRIGGER,
+        )
     except KeyError as exc:
         print(f"error: missing environment variable {exc}", file=sys.stderr)
         sys.exit(1)
@@ -143,7 +156,7 @@ def _print_section(title: str) -> None:
 async def _run(args: argparse.Namespace) -> None:
     from workflow.runner import PlanExecuteRunner
 
-    llm = _build_llm(args.model_id)
+    llm = _build_llm(model_id=args.model_id)
     server_paths = _parse_servers(args.servers)
     runner = PlanExecuteRunner(llm=llm, server_paths=server_paths)
     result = await runner.run(args.question)
