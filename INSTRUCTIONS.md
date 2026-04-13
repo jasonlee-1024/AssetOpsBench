@@ -369,6 +369,52 @@ class MyLLM(LLMBackend):
 runner = PlanExecuteRunner(llm=MyLLM())
 ```
 
+### Optional: LMTrain Classifier
+
+LMTrain is a lightweight binary classifier that decides whether to use
+thinking mode (`</think>`).
+
+Data format (JSON or JSONL):
+
+```json
+{"text": "xxxxxxxxxx", "label": "true"}
+{"text": "yyyyyyyyyy", "label": "false"}
+```
+
+Install optional dependencies:
+
+```bash
+uv sync --group lmtrain
+```
+
+Train:
+
+```bash
+uv run train-lmtrain
+```
+
+Configuration is defined as constants at the top of `src/llm/lmtrain.py`.
+
+Minimal setup:
+
+- Set `DATA_FILE` to one JSON/JSONL dataset containing `text` + `label` (`true`/`false`).
+- Train/eval are auto-split from that dataset.
+- Eval split is fixed to 25%.
+
+Training writes evaluation metrics to `models/lmtrain/eval_metrics.json`.
+The report includes:
+
+- metrics at your chosen threshold (`accuracy`, `precision`, `recall`, `f1`, confusion matrix)
+
+Use it at runtime:
+
+```bash
+uv run plan-execute "Your question here"
+```
+
+When `models/lmtrain` exists, `plan-execute` loads it automatically.
+If the model folder does not exist, `plan-execute` runs without routing.
+
 ### Add more MCP servers
 
 Pass `server_paths` to register additional servers. Keys must match the server names the planner assigns steps to:
