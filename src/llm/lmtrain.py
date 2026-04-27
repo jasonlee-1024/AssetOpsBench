@@ -6,11 +6,28 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
-
 from .base import LLMBackend
+import wandb
+import os
+
+
+# # Start a new wandb run to track this script.
+# run = wandb.init(
+#     # Set the wandb entity where your project will be logged (generally your team name).
+#     entity="ccahill19-columbia-university",
+#     # Set the wandb project where this run will be logged.
+#     project="hpml-semester-project",
+#     # Track hyperparameters and run metadata.
+#     config={
+#         "learning_rate": 2e-5,
+#         "architecture": "CNN",
+#         "dataset": "AssetOpsBench",
+#         "epochs": 3,
+#     },
+# )
 
 # Training config: edit these values directly in this script.
-DATA_FILE = Path("data/lmtrain_data.jsonl")
+DATA_FILE = Path("llm/lmtrain_data.jsonl")
 EVAL_RATIO = 0.25
 OUTPUT_DIR = Path("models/lmtrain")
 MODEL_NAME = "distilbert-base-uncased"
@@ -103,6 +120,18 @@ def _print_eval_report(threshold: float, metrics: dict[str, Any]) -> None:
         f"recall={metrics['recall']:.4f} "
         f"f1={metrics['f1']:.4f}"
     )
+
+    try:
+        # W&B logging
+        wandb.log({
+            "eval/threshold": threshold,
+            "eval/accuracy": metrics['accuracy'],
+            "eval/precision": metrics['precision'],
+            "eval/recall": metrics['recall'],
+            "eval/f1": metrics['f1']
+        })
+    except Exception:
+        raise ValueError("W&B logging not working")
 
 
 @dataclass
@@ -210,6 +239,9 @@ def train(
     train_ds = Dataset.from_list(train_examples).map(_tokenize, batched=True)
     eval_ds = Dataset.from_list(eval_examples).map(_tokenize, batched=True) if eval_examples else None
 
+    # W&B env variables
+    # proj = os.environ.get("WANDB_PROJECT", "lmtrain")
+    # entity = os.environ.get("WANDB_ENTITY")
     args = TrainingArguments(
         output_dir=str(output_dir),
         learning_rate=learning_rate,
@@ -221,7 +253,8 @@ def train(
         save_strategy="epoch" if eval_ds is not None else "no",
         logging_strategy="steps",
         logging_steps=20,
-        report_to="none",
+        report_to="wandb",
+        run_name=f"classifier_{model_name}",
     )
 
     trainer = Trainer(
@@ -240,6 +273,14 @@ def train(
 
     if eval_ds is None:
         return None
+    
+    # add W&B logging with args.num_train_epochs, args.etc
+    # wandb.log({
+    #   "train/num_epochs": args.num_train_epochs,
+    #   "train/acc": train_accuracy,
+    #   "test/acc": eval_accuracy
+    # })
+    
 
     prediction_output = trainer.predict(eval_ds)
     logits = prediction_output.predictions
@@ -268,6 +309,22 @@ def train(
 
 def main() -> None:
     """Train using script-level constants defined at the top of this file."""
+    try:
+        wandb.init(
+            project="hpml-semester-project",
+            entity="ccahill19-columbia-university",
+            config={
+                "model_name": MODEL_NAME,
+                "learning_rate": LEARNING_RATE,
+                "epochs": EPOCHS,
+                "batch_size": BATCH_SIZE,
+                "threshold": THRESHOLD,
+                "dataset": "AssestOpsBench",
+            },
+        )
+    except Exception as e:
+        print(f"W&B logging not available: {e}")
+   
     train(
         data_file=DATA_FILE,
         output_dir=OUTPUT_DIR,
