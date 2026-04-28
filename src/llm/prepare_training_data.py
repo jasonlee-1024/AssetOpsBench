@@ -4,7 +4,7 @@
     that lmtrain.py expects: {"text": "...", "label": "true" | "false"}
 
     The dataset is labeled using Llama 3.3 70B via WatsonX, which is prompted to return whether each query
-    needs thinking mode enabled.
+    should need thinking mode enabled.
 '''
 
 import json
@@ -13,24 +13,22 @@ from pathlib import Path
 from datasets import load_dataset
 from .litellm import LiteLLMBackend
 
-# llm = LiteLLMBackend("watsonx/meta-llama/llama-3-3-70b-instruct")
-llm = LiteLLMBackend("watsonx/ibm/granite-13b-chat-v2")
+
+llm = LiteLLMBackend("watsonx/meta-llama/llama-3-3-70b-instruct")
+
 
 # load dataset
-print(f"")
+print(f"Loading dataset")
 dataset = load_dataset("ibm-research/AssetOpsBench", "scenarios")
-split = "train"
+data = dataset["train"]
 
-output_path = Path("data/lmtrain_data.jsonl")
+output_path = Path("llm/lmtrain_data.jsonl")
 output_path.parent.mkdir(parents=True, exist_ok=True)
 
 with open(output_path, "w") as f:
-    for idx, sample in enumerate(dataset[split]):
+    for idx, sample in enumerate(data):
         
-        text = sample.get("text")
-        if not text:
-            raise ValueError("text field does not exist")
-        
+        text = sample["text"]
         text = text.strip()
 
         # prompting llm to label this sample as needing thinking mode or not

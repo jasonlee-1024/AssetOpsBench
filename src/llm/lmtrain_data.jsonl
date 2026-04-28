@@ -1,0 +1,152 @@
+{"text": "What IoT sites are available?", "label": "false"}
+{"text": "Can you list the IoT sites?", "label": "false"}
+{"text": "What assets can be found at the MAIN site?", "label": "false"}
+{"text": "Which assets are located at the MAIN facility?", "label": "false"}
+{"text": "Retrieve metadata for Chiller 6 located at the MAIN site.", "label": "false"}
+{"text": "Get the asset details for Chiller 9 at the MAIN site.", "label": "false"}
+{"text": "Download the metadata for Chiller 3 at the MAIN facility.", "label": "false"}
+{"text": "Download sensor data for Chiller 6's Tonnage from the last week of 2020 at the MAIN site", "label": "false"}
+{"text": "Retrieve sensor data for Chiller 6's % Loaded from June 2020 at MAIN.", "label": "false"}
+{"text": "Get sensor data for both Chiller 6 and Chiller 9's Tonnage from first week of June 2020 at MAIN in a single file.", "label": "false"}
+{"text": "Download all sensor data for Chiller 6 from the last week of April '20 at the MAIN site.", "label": "false"}
+{"text": "Retrieve sensor data for Chiller 6 from June 2020.", "label": "false"}
+{"text": "What was the latest supply humidity from CQPA AHU 1 at site MAIN on sept 3 2015? return in a file", "label": "false"}
+{"text": "what was the supply temperature from CQPA AHU 2B on sept 19, 2020 at quarter to midnight, at site MAIN? return in a file", "label": "true"}
+{"text": "how much power was CQPA AHU 1 (MAIN site) using on 6/14/20?", "label": "false"}
+{"text": "Can I list all the metrics monitored by CQPA AHU 2B? use site MAIN", "label": "false"}
+{"text": "What is the power consumption of CQPA AHU 1 on mar 13 '20, site MAIN?", "label": "false"}
+{"text": "retrieve the supply temperature data recorded last week for Chiller 3 (MAIN site)?", "label": "false"}
+{"text": "list all the chillers at site MAIN", "label": "false"}
+{"text": "what was the return temperature from CQPA AHU 2B on sept 19, 2020 at 7pm, at site MAIN? return data in a file", "label": "false"}
+{"text": "List all failure modes of asset Chiller.", "label": "true"}
+{"text": "List all failure modes of asset Chiller 6.", "label": "true"}
+{"text": "List all failure modes of asset Wind Turbine.", "label": "true"}
+{"text": "List all installed sensors of asset Chiller 6.", "label": "false"}
+{"text": "Provide some sensors of asset Wind Turbine.", "label": "false"}
+{"text": "List all failure modes of Chiller 6 that can be detected by Chiller 6 Supply Temperature.", "label": "true"}
+{"text": "List all failure modes of Chiller 6 that can be detected by temperature sensors.", "label": "true"}
+{"text": "List all failure modes of Chiller 6 that can be detected by temperature sensors and power input sensors.", "label": "true"}
+{"text": "Get failure modes for Chiller 6 and only include in final response those that can be monitored using the available sensors.", "label": "true"}
+{"text": "Are there any failure modes of Chiller 6 that can be predicted by monitoring the vibration sensor data?", "label": "true"}
+{"text": "List all sensors of Chiller 6 that are potentially relevant to Compressor Overheating.", "label": "true"}
+{"text": "If compressor overheating occurs for Chiller 6, which sensor should be prioritized for monitoring this specific failure?", "label": "true"}
+{"text": "If Evaporator Water side fouling occurs for Chiller 6, which sensor is most relevant for monitoring this specific failure?", "label": "false"}
+{"text": "What are the failure modes of Chiller 6 that can be identified by analyzing the data from the available sensors?", "label": "true"}
+{"text": "Purge unit of chiller 6 have possibility to excess purge, what is the plan by the maintenance experts to early detect the failure?", "label": "true"}
+{"text": "Generate a machine learning recipe for detecting overheating failure for Chiller 6. Result should include feature sensors and target sensor.", "label": "true"}
+{"text": "When compressor motor of Chiller 6 fails, what is the temporal behavior of the power input?", "label": "true"}
+{"text": "When power input of Chiller 6 drops, what is the potential failure that causes it?", "label": "true"}
+{"text": "When the Liquid Refrigerant Evaporator Temperature of Chiller 6 drops, what failure is most likely to occur?", "label": "true"}
+{"text": "I want to build an anomaly model for identifying a chiller trip failure for POKMAIN chiller 6. Provide me a list of sensors that I should use, along with the temporal behavior,", "label": "true"}
+{"text": "What types of time series analysis are supported?", "label": "false"}
+{"text": "What are time series pretrained models are available in system?", "label": "false"}
+{"text": "Are any time series forecasting models supported?", "label": "false"}
+{"text": "Is TTM (Tiny Time Mixture), a time series model supported?", "label": "false"}
+{"text": "Is LSTM model supported in TSFM?", "label": "false"}
+{"text": "Is Chronos model supported in TSFM?", "label": "false"}
+{"text": "Is Anomaly Detection supported in TSFM?", "label": "false"}
+{"text": "Is Time Series Classification supported in TSFM?", "label": "false"}
+{"text": "Is any model with context length 96 supported in TSFM?", "label": "false"}
+{"text": "Is any model with context length 1024 supported in TSFM?", "label": "false"}
+{"text": "Find a model for energy forecasting.", "label": "true"}
+{"text": "Find a model for energy forecasting with context length 96 and nothing else.", "label": "true"}
+{"text": "Find all models with context length 96.", "label": "false"}
+{"text": "How many models with context length exactly 96 are supported?", "label": "false"}
+{"text": "Does TSFM support time series regression tasks or any model for forecasting with context length 1024?", "label": "false"}
+{"text": "Forecast 'Chiller 9 Condenser Water Flow' using data in 'chiller9_annotated_small_test.csv'. Use parameter 'Timestamp' as a timestamp. Use the following parameters as inputs 'Chiller 9 Liquid Refrigerant Evaporator Temperature,Chiller 9 Return Temperature,Chiller 9 Tonnage,Chiller 9 Setpoint Temperature,Chiller 9 Supply Temperature,Chiller 9 Chiller % Loaded,Chiller 9 Condenser Water Supply To Chiller Temperature,Chiller 9 Power Input,Chiller 9 Chiller Efficiency'", "label": "true"}
+{"text": "Forecast 'Chiller 9 Condenser Water Flow' using data in 'chiller9_annotated_small_test.csv'. Use parameter 'Timestamp' as a timestamp.", "label": "true"}
+{"text": "Use data in 'chiller9_annotated_small_test.csv' to forecast 'Chiller 9 Condenser Water Flow' with 'Timestamp' as a timestamp.", "label": "true"}
+{"text": "Forecast 'Chiller 9 Condenser Water Flow' using data in 'chiller9_annotated_small_test.csv'. Use the following parameters as inputs 'Chiller 9 Liquid Refrigerant Evaporator Temperature,Chiller 9 Return Temperature,Chiller 9 Tonnage,Chiller 9 Setpoint Temperature,Chiller 9 Supply Temperature,Chiller 9 Chiller % Loaded,Chiller 9 Condenser Water Supply To Chiller Temperature,Chiller 9 Power Input,Chiller 9 Chiller Efficiency'", "label": "true"}
+{"text": "Finetune a forecasting model for 'Chiller 9 Condenser Water Flow' using data in 'chiller9_finetuning_small.csv' with 'Timestamp' as a timestamp.", "label": "true"}
+{"text": "Finetune a forecasting model for 'Chiller 9 Condenser Water Flow' using data in 'chiller9_finetuning_small.csv' with 'Timestamp' as a timestamp. Use 1% of data for tuning", "label": "true"}
+{"text": "I need to perform Time Series anomaly detection of 'Chiller 9 Condenser Water Flow' using data in chiller9_tsad.csv", "label": "true"}
+{"text": "Find and run several methods to analyze data sensor 'Chiller 9 Condenser Water Flow' using data in 'data/tsfm_test_data/chiller9_tsad-small.csv'.", "label": "true"}
+{"text": "Get the work order of equipment CWC04013 for year 2017.", "label": "false"}
+{"text": "I would like to check the work order distribution for the equipment labeled as CWC04013 for the year 2017.", "label": "false"}
+{"text": "I would like to retrieve the preventive work order details for the equipment labeled as CWC04013 for the year 2017.", "label": "true"}
+{"text": "I would like to retrieve the corrective work order details for the equipment labeled as CWC04013 for the year 2017.", "label": "true"}
+{"text": "Get the events of equipment CWC04009 for year 2019 and provide a summary based on the event group, such as work order event, alerts and anomaly events.", "label": "true"}
+{"text": "Get all the events of equipment CWC04009 for the June of 2020 and provide a summary based on the event group for work order, alert, and anomaly.", "label": "true"}
+{"text": "Get the summary of the events of equipment CWC04009 for the June of 2020 and provide a summary based on the event group.", "label": "true"}
+{"text": "Get the daily count of the events of alert, anomaly for 2021 for equipment CWC04009.", "label": "false"}
+{"text": "Get the daily count of the events of alert, anomaly for the May 2020 for equipment CWC04009.", "label": "false"}
+{"text": "Get the daily count of alert, anomaly and work order event for the May 2020 for equipment CWC04009.", "label": "false"}
+{"text": "Get all the events of equipment CWC04009 for the first week of June of 2020 and provide a summary based on the event group for work order event, alert, and anomaly.", "label": "true"}
+{"text": "Which corrective work orders for equipment CWC04009 in year 2017 can be bundled in the next maintenance window? A bundle means that several work orders are executed in a short period, say in two weeks.", "label": "true"}
+{"text": "I would like to predict the next work order probability for the equipment labeled as CWC04013.", "label": "true"}
+{"text": "Assuming that the current date is 2018-01-02, can you predict next work order probability for me for equipment CWC04009 using predict_next_work_order_probability function?", "label": "false"}
+{"text": "Assuming that the current date is 2018-01-02, can you predict next work order probability for me for equipment CWC04009?", "label": "true"}
+{"text": "When an anomaly happens for equipment CWC04009, can you recommend a list of candidate work orders and give me a summary of work order as percentage?", "label": "true"}
+{"text": "When an anomaly happens for equipment CWC04009, can you recommend top three work orders to address this problem?", "label": "true"}
+{"text": "Just notice an anomaly 'KPI Cooling Load above upper bound' happens for equipment CWC04009, can you recommend top three work orders to address this problem?", "label": "true"}
+{"text": "Just notice two anomalies 'KPI Cooling Load above upper bound' and 'KPI Delta Setpoint above upper bound' happened for equipment CWC04009, can you recommend top three work orders to address this problem?", "label": "true"}
+{"text": "Using your knowledge of the industrial asset, can you suggest me a work order for alert RUL0014 with the context of 'Chiller - Cooling Substance Delta T Low' for closed-loop water-cool chiller its load is higher than the upper bound?", "label": "true"}
+{"text": "Assume today is early of July 2020, I would like to review the performance of chiller 9 with equipment ID CWC04009 for June 2020 and track any anomalies or operation violations as alerts.", "label": "true"}
+{"text": "In May and June of 2020, numerous anomalies and alerts have been reported for Chiller 9 with equipment ID CWC04009. Could you review them and suggest appropriate work orders or actions?", "label": "true"}
+{"text": "After checking existing work orders, anomalies and alerts in May and June 2020 for Chiller 9 with equipment ID CWC04009, should I recommend a new work order or is it too early to decide for July 2020?", "label": "true"}
+{"text": "I am using historical work order information upto end of June 2020 for prioritizing maintenance. Which work orders should I prioritize first for Chiller 9 with equipment ID CWC04009 in July 2020?", "label": "true"}
+{"text": "Can you provide guidance on bundling corrective work orders together to optimize the maintenance schedule for Chiller 9 with equipment ID CWC04009 covering years of 2017, 2018 and 2019, bundle has to be happen within two weeks and have at least two work orders, also tell the details of each bundle?", "label": "true"}
+{"text": "How can I analyze anomalies across multiple KPIs to better diagnose the root cause of these issues?", "label": "true"}
+{"text": "Could you identify any causal linkages between anomalies across KPIs to better understand the severity and interconnectedness?", "label": "true"}
+{"text": "Since we know 80% of alerts are likely spurious, can you identify the meaningful 20% for further analysis for any chillers?", "label": "true"}
+{"text": "Could you generate rules that help distinguish meaningful alerts from spurious ones?", "label": "true"}
+{"text": "How can reasoning on operation alerts help in generating significant warning message to improve maintenance recommendations for Chiller 9 with equipment ID CWC04009?", "label": "true"}
+{"text": "We are building an early detection and remediation system for potential failures, such as condenser water side fouling, for Chiller 9 with equipment ID CWC04009 at main site site with two month\u2019s period from 2020-05-01T12:30:00 to 2022-06-30T19:30:00.  We like to review the chiller\u2019s performance of the period with any anomalies or operation violations as alerts, and provide the guideline on work order generation?", "label": "true"}
+{"text": "Assume today is early of July 2020, I would like to review the performance of chiller 9 with equipment ID CWC04009 for June 2020 and track any anomalies or operation violations as alerts. Tell me what corrective work orders have been scheduled, and whether new work order should generate.", "label": "true"}
+{"text": "I would like to review the performance of chiller 9 with equipment ID CWC04009 at main site site for June 2020 and track any anomalies or operation alerts. Tell me what corrective work orders have been scheduled, and whether new work order should generate.", "label": "true"}
+{"text": "We are building an early detection system for a potential failure condenser Water side fouling for Chiller 9. Monitor Chiller 9 at main site site from 2020-04-20T12:30:00 to 2020-05-12T19:30:00, identify anomalous behaviors and provide a work order recomendation.", "label": "true"}
+{"text": "We are building an early detection system for a potential failure condenser Water side fouling for Chiller 9. Monitor Chiller 9 at main site site from 2020-04-20T12:30:00 to 2020-05-12T19:30:00, identify anomalous behaviors and provide a work order recommendation if there is no such corrective work order created already.", "label": "true"}
+{"text": "Assume today is early of July 2020, I would like to review the alerts for chiller 9 with equipment ID CWC04009 for June 2020 and the work order should be generated based on the type of alerts.", "label": "true"}
+{"text": "Build a predictive model from historical alerts and work orders of CWC04009 to forecast failures and replacement needs over the forthcoming 10-year horizon.", "label": "true"}
+{"text": "Detect clusters of alerts and work orders on CWC04009 that signal elevated failure risk for the next planning cycle, guiding proactive maintenance budgeting.", "label": "true"}
+{"text": "Rank alert descriptions for CWC04009 by how strongly they predict subsequent corrective work orders, supporting long-term failure-risk mitigation.", "label": "true"}
+{"text": "Analyse sequences where alerts precede corrective work orders on CWC04009 to improve failure anticipation over the asset\u2019s remaining life-cycle.", "label": "true"}
+{"text": "Using historical counts, project how many preventive (PM) and corrective (CM) work orders each major description category is likely to generate for CWC04009 over the coming decade.", "label": "true"}
+{"text": "Determine which alert or work-order descriptions for CWC04009 exhibit the fastest growth trend, indicating components that may need early replacement in the life-cycle plan.", "label": "true"}
+{"text": "Examine whether the year-over-year increase in corrective maintenance for CWC04009 warrants shifting resources from annual repairs toward multi-year replacement planning.", "label": "true"}
+{"text": "Measure typical time gaps between alerts and the corrective work orders they precede for CWC04009 to refine the life-cycle maintenance timeline.", "label": "true"}
+{"text": "Quantify how often alerts and corrective work orders cluster together for CWC04009 to identify high-risk operational periods in the years ahead.", "label": "true"}
+{"text": "Identify which alert descriptions for CWC04009 show the steepest upward trend and therefore require priority in the 10-year capital-planning roadmap.", "label": "true"}
+{"text": "Determine which alert or work-order descriptions account for the highest event counts on CWC04009 and should therefore drive allocation of funds in the next 10-year capital budget.", "label": "true"}
+{"text": "Is there any anomaly detected in Chiller 6's Tonnage in the week of 2020-04-27 at the MAIN site?", "label": "false"}
+{"text": "What is the forecast for 'Chiller 9 Condenser Water Flow' in the week of 2020-04-27 based on data from the MAIN site?", "label": "true"}
+{"text": "Have there been any anomalies in Chiller 6's Tonnage in the week of 2020-04-27 at MAIN?", "label": "true"}
+{"text": "Can you forecast Chiller 6's performance for next week based on the data from 2020-04-27 at the MAIN site?", "label": "true"}
+{"text": "What's the forecast for Chiller 6's Tonnage for next week based on the data from the week of 2020-04-27 at MAIN?", "label": "true"}
+{"text": "Is there any anomaly detected in Chiller 9's Condenser Water Flow in the week of 2020-04-27 at MAIN?", "label": "false"}
+{"text": "What is the predicted energy consumption for Chiller 9 in the week of 2020-04-27 based on data from the MAIN site?", "label": "true"}
+{"text": "Have there been any anomalies in Chiller 6's performance metrics from the week of 2020-04-27 at MAIN?", "label": "false"}
+{"text": "Can you detect any anomalies in Chiller 6's Condenser Water Flow in the week of 2020-04-27 at MAIN?", "label": "true"}
+{"text": "What are the anomaly detection results for Chiller 9's Tonnage and Power Input in the week of 2020-04-27 at the MAIN site?", "label": "true"}
+{"text": "Can you predict Chiller 9's energy usage for next week based on data from the week of 2020-04-27 at MAIN?", "label": "true"}
+{"text": "Has any anomaly been detected in Chiller 6's Return Temperature in the week of 2020-04-27 at the MAIN site?", "label": "false"}
+{"text": "What is the forecast for Chiller 6's Setpoint Temperature for next week based on the week of 2020-04-27 data?", "label": "true"}
+{"text": "Can you detect any anomalies in Chiller 9's Condenser Water Flow in the week of 2020-04-27 at MAIN?", "label": "true"}
+{"text": "Can you predict Chiller 9's performance for next week based on data from the week of 2020-04-27 at MAIN?", "label": "true"}
+{"text": "What's the forecast for Chiller 6's future energy consumption for next week based on data from the week of 2020-04-27 at MAIN?", "label": "true"}
+{"text": "Are there any anomalies detected in Chiller 9's Tonnage in the week of 2020-04-27 at the MAIN site?", "label": "false"}
+{"text": "Can you forecast energy usage for Chiller 9 for next week using data from the week of 2020-04-27 at the MAIN site?", "label": "true"}
+{"text": "Is there any anomaly detected in Chiller 9's Power Input in the week of 2020-04-27 at MAIN?", "label": "false"}
+{"text": "What is the forecast for Chiller 6's energy consumption for next week based on data from the week of 2020-04-27 at the MAIN site?", "label": "true"}
+{"text": "List all failure modes of asset Chiller 6 at MAIN site.", "label": "true"}
+{"text": "List all failure modes of asset Chiller 6 at MAIN site.", "label": "true"}
+{"text": "List all installed sensors of asset Chiller 6 at MAIN site.", "label": "false"}
+{"text": "List all failure modes of Chiller 6 at MAIN site that can be detected by Chiller 6 Chiller Efficiency.", "label": "true"}
+{"text": "List all failure modes of Chiller 6 at MAIN site that can be detected by temperature sensors.", "label": "true"}
+{"text": "List all failure modes of Chiller 6 at MAIN site that can be detected by temperature sensors and power input sensors.", "label": "true"}
+{"text": "Get failure modes for Chiller 6 at MAIN site and only include in final response those that can be monitored using the available sensors.", "label": "true"}
+{"text": "Are there any failure modes of Chiller 6 at MAIN site that can be predicted by monitoring the vibration sensor data?", "label": "true"}
+{"text": "List all sensors of Chiller 6 at MAIN site that are potentially relevant to Compressor Overheating.", "label": "true"}
+{"text": "If compressor overheating occurs for Chiller 6 at MAIN site, which sensor should be prioritized for monitoring this specific failure?", "label": "true"}
+{"text": "If Evaporator Water side fouling occurs for Chiller 6 at MAIN site, which sensor is most relevant for monitoring this specific failure?", "label": "true"}
+{"text": "What are the failure modes of Chiller 6 at MAIN site that can be identified by analyzing the data from the available sensors?", "label": "true"}
+{"text": "Generate an anomaly detection recipe for detecting compressor motor failure for Chiller 6 at MAIN site.", "label": "true"}
+{"text": "Purge unit of chiller 6 at MAIN site have possibility to excess purge, what is the plan by the maintenance experts to early detect the failure?", "label": "true"}
+{"text": "Generate a machine learning recipe for detecting overheating failure for Chiller 6 at MAIN site. Result should include feature sensors and target sensor.", "label": "true"}
+{"text": "List all failure modes of Chiller 6 at MAIN site that can be detected by temperature sensors and power input sensors.", "label": "true"}
+{"text": "When compressor motor of Chiller 6 at MAIN site fails, what is the temporal behavior of the power input?", "label": "true"}
+{"text": "When power input of Chiller 6 at MAIN site drops, what is the potential failure that causes it?", "label": "true"}
+{"text": "When the Liquid Refrigerant Evaporator Temperature of Chiller 6 at MAIN site drops, what failure is most likely to occur?", "label": "true"}
+{"text": "I want to build an anomaly model for identifying a chiller trip failure for MAIN chiller 6. Provide me a list of sensors that I should use, along with the temporal behavior,", "label": "true"}
+{"text": "Can you check if there are any anomalies for chiller tonnage, and do you think I should create a work order after reviewing the anomalies?", "label": "true"}
+{"text": "Here is an output of anomaly model in file with absolute path '/tmp/tsad_conformal.csv', can you check if there are any anomalies, and do you think I should create a work order after reviewing the anomalies?", "label": "true"}
