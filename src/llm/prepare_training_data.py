@@ -22,7 +22,7 @@ print(f"Loading dataset")
 dataset = load_dataset("ibm-research/AssetOpsBench", "scenarios")
 data = dataset["train"]
 
-output_path = Path("llm/lmtrain_data.jsonl")
+output_path = Path("data/lmtrain_data.jsonl")
 output_path.parent.mkdir(parents=True, exist_ok=True)
 
 with open(output_path, "w") as f:

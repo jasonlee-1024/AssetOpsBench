@@ -10,24 +10,8 @@ from .base import LLMBackend
 import wandb
 import os
 
-
-# # Start a new wandb run to track this script.
-# run = wandb.init(
-#     # Set the wandb entity where your project will be logged (generally your team name).
-#     entity="ccahill19-columbia-university",
-#     # Set the wandb project where this run will be logged.
-#     project="hpml-semester-project",
-#     # Track hyperparameters and run metadata.
-#     config={
-#         "learning_rate": 2e-5,
-#         "architecture": "CNN",
-#         "dataset": "AssetOpsBench",
-#         "epochs": 3,
-#     },
-# )
-
 # Training config: edit these values directly in this script.
-DATA_FILE = Path("llm/lmtrain_data.jsonl")
+DATA_FILE = Path("data/lmtrain_data.jsonl")
 EVAL_RATIO = 0.25
 OUTPUT_DIR = Path("models/lmtrain")
 MODEL_NAME = "distilbert-base-uncased"
@@ -239,9 +223,6 @@ def train(
     train_ds = Dataset.from_list(train_examples).map(_tokenize, batched=True)
     eval_ds = Dataset.from_list(eval_examples).map(_tokenize, batched=True) if eval_examples else None
 
-    # W&B env variables
-    # proj = os.environ.get("WANDB_PROJECT", "lmtrain")
-    # entity = os.environ.get("WANDB_ENTITY")
     args = TrainingArguments(
         output_dir=str(output_dir),
         learning_rate=learning_rate,
@@ -262,9 +243,10 @@ def train(
         args=args,
         train_dataset=train_ds,
         eval_dataset=eval_ds,
-        tokenizer=tokenizer,
         data_collator=DataCollatorWithPadding(tokenizer=tokenizer),
     )
+    # setting tokenizer after due to transformers version mismatches
+    trainer.tokenizer = tokenizer
     trainer.train()
 
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -274,14 +256,6 @@ def train(
     if eval_ds is None:
         return None
     
-    # add W&B logging with args.num_train_epochs, args.etc
-    # wandb.log({
-    #   "train/num_epochs": args.num_train_epochs,
-    #   "train/acc": train_accuracy,
-    #   "test/acc": eval_accuracy
-    # })
-    
-
     prediction_output = trainer.predict(eval_ds)
     logits = prediction_output.predictions
     labels = prediction_output.label_ids.astype(int).tolist()
@@ -310,9 +284,11 @@ def train(
 def main() -> None:
     """Train using script-level constants defined at the top of this file."""
     try:
+        # initializing w&b
         wandb.init(
             project="hpml-semester-project",
             entity="ccahill19-columbia-university",
+            name="classifier_training",
             config={
                 "model_name": MODEL_NAME,
                 "learning_rate": LEARNING_RATE,

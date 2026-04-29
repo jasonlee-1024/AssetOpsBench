@@ -1,0 +1,16 @@
+{
+  "threshold": 0.5,
+  "metrics": {
+    "accuracy": 0.7368421052631579,
+    "precision": 0.7368421052631579,
+    "recall": 1.0,
+    "f1": 0.8484848484848484,
+    "confusion_matrix": {
+      "tp": 28,
+      "tn": 0,
+      "fp": 10,
+      "fn": 0
+    },
+    "support": 38
+  }
+}
