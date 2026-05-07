@@ -79,3 +79,40 @@ conditional:
     - excluding
     - greater than zero
     - above zero
+
+
+# ── Secondary signals ────────────────────────────────────────────────────────
+# Only checked when use_secondary_rules=True.
+# More conservative by marking more queries as requiring reasoning.
+
+# Signal: has_forecast
+# Fires on forward-looking or predictive queries.
+secondary_forecast:
+  keywords:
+    - predict
+    - forecast
+    - projection
+    - upcoming
+    - future
+    - trend
+  phrases:
+    - next week
+    - next month
+
+# Signal: has_causal
+# Broader causal/explanatory catch — overlaps with anomaly but fires on
+# general "explain" language without explicit fault vocabulary.
+secondary_causal:
+  keywords:
+    - explain
+    - reason
+    - cause
+    - diagnose
+    - diagnosis
+    - investigate
+  phrases:
+    - what caused
+    - what led to
+    - how does
+    - why did
+    - why is

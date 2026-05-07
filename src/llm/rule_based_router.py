@@ -68,6 +68,14 @@ _ANOMALY_PHRASE     = _build_phrase_pattern(_CONFIG["anomaly"]["phrases"])
 # Conditional filter
 _CONDITIONAL_PHRASE = _build_phrase_pattern(_CONFIG["conditional"]["phrases"])
 
+# Secondary: forecast
+_SECONDARY_FORECAST_KEYWORD = _build_word_pattern(_CONFIG["secondary_forecast"]["keywords"])
+_SECONDARY_FORECAST_PHRASE  = _build_phrase_pattern(_CONFIG["secondary_forecast"]["phrases"])
+
+# Secondary: causal
+_SECONDARY_CAUSAL_KEYWORD = _build_word_pattern(_CONFIG["secondary_causal"]["keywords"])
+_SECONDARY_CAUSAL_PHRASE  = _build_phrase_pattern(_CONFIG["secondary_causal"]["phrases"])
+
 # ---------------------------------------------------------------------------
 # Structural patterns — edit this file to change these
 # ---------------------------------------------------------------------------
@@ -130,16 +138,32 @@ def has_conditional_filter(query: str) -> bool:
     (e.g. 'during operating hours', 'when Tonnage > 0', 'non-zero only')."""
     return bool(_CONDITIONAL_PHRASE.search(query) or _OPERATOR_CONDITION.search(query))
 
+
+def has_forecast(query: str) -> bool:
+    """Secondary signal: return True if the query is forward-looking or predictive
+    (e.g. 'forecast next week', 'predict future trend')."""
+    return bool(_SECONDARY_FORECAST_KEYWORD.search(query) or _SECONDARY_FORECAST_PHRASE.search(query))
+
+
+def has_causal(query: str) -> bool:
+    """Secondary signal: return True if the query asks for explanation or diagnosis
+    without necessarily using explicit fault vocabulary
+    (e.g. 'what caused', 'how does this work', 'investigate')."""
+    return bool(_SECONDARY_CAUSAL_KEYWORD.search(query) or _SECONDARY_CAUSAL_PHRASE.search(query))
+
 # ---------------------------------------------------------------------------
 # Router
 # ---------------------------------------------------------------------------
 
-def route(query: str) -> bool:
+def route(query: str, use_secondary_rules: bool = False) -> bool:
     """Return True if the query is complex enough to warrant reasoning mode.
 
-    Checks all five signals and returns True if any one fires.  The threshold
-    is intentionally conservative: a borderline query defaults to the reasoning
-    planner (higher accuracy) rather than the standard planner (lower latency).
+    Primary signals (always checked): multi-date, derived metric, anomaly
+    keywords, multi-asset, conditional filter.
+
+    Secondary signals (checked when use_secondary_rules=True): forecast,
+    causal/explanatory language. These increase the number of queries routed
+    to the reasoning mode to be more conservative about accuracy over latency.
     """
     signals = [
         has_multi_date(query),
@@ -148,6 +172,11 @@ def route(query: str) -> bool:
         has_multi_asset(query),
         has_conditional_filter(query),
     ]
+    if use_secondary_rules:
+        signals += [
+            has_forecast(query),
+            has_causal(query),
+        ]
     return any(signals)
 
 # ---------------------------------------------------------------------------
@@ -163,6 +192,9 @@ class RuleBasedClassifier:
     No model loading, no GPU, no external dependencies beyond pyyaml.
     """
 
+    def __init__(self, use_secondary_rules: bool = False) -> None:
+        self.use_secondary_rules = use_secondary_rules
+
     def should_use_thinking(self, text: str, threshold: float = 0.5) -> bool:
         """Return True if the query should be routed to reasoning mode.
 
@@ -170,4 +202,4 @@ class RuleBasedClassifier:
         ThinkModeClassifier but is ignored — the rule-based decision is
         deterministic.
         """
-        return route(text)
+        return route(text, use_secondary_rules=self.use_secondary_rules)
