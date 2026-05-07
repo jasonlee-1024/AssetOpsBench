@@ -1,0 +1,118 @@
+# Keywords and phrases for the rule-based query router.
+# Edit these lists to update routing behaviour without touching Python code.
+# Matching is case-insensitive for all entries.
+
+# Signal: has_derived_metric
+# Fires when the query requests a computed value rather than a raw retrieval.
+derived_metric:
+  keywords:
+    - total
+    - average
+    - avg
+    - sum
+    - energy
+    - efficiency
+    - kwh
+    - estimate
+    - mean
+    - aggregate
+
+# Signal: has_anomaly_keywords
+# Fires when the query asks about abnormal values, root cause, or plausibility.
+anomaly:
+  keywords:
+    - abnormal
+    - anomaly
+    - anomalies
+    - fault
+    - faults
+    - plausible
+    - why
+    - unexpected
+    - unusual
+  phrases:
+    # Multi-word phrases — matched as substrings, so word order matters.
+    - out of range
+    - sensor fault
+    - root cause
+
+# Signal: has_multi_date
+# Simple comparison words — the "between...and" structural pattern stays in Python.
+multi_date:
+  comparison_words:
+    - versus
+    - compared to
+  month_names:
+    - january
+    - february
+    - march
+    - april
+    - may
+    - june
+    - july
+    - august
+    - september
+    - october
+    - november
+    - december
+    - jan
+    - feb
+    - mar
+    - apr
+    - jun
+    - jul
+    - aug
+    - sep
+    - oct
+    - nov
+    - dec
+
+# Signal: has_conditional_filter
+# Fires when the query filters on a secondary signal condition.
+conditional:
+  phrases:
+    - during operating hours
+    - non-zero
+    - nonzero
+    - only when
+    - only if
+    - excluding
+    - greater than zero
+    - above zero
+
+
+# ── Secondary signals ────────────────────────────────────────────────────────
+# Only checked when use_secondary_rules=True.
+# More conservative by marking more queries as requiring reasoning.
+
+# Signal: has_forecast
+# Fires on forward-looking or predictive queries.
+secondary_forecast:
+  keywords:
+    - predict
+    - forecast
+    - projection
+    - upcoming
+    - future
+    - trend
+  phrases:
+    - next week
+    - next month
+
+# Signal: has_causal
+# Broader causal/explanatory catch — overlaps with anomaly but fires on
+# general "explain" language without explicit fault vocabulary.
+secondary_causal:
+  keywords:
+    - explain
+    - reason
+    - cause
+    - diagnose
+    - diagnosis
+    - investigate
+  phrases:
+    - what caused
+    - what led to
+    - how does
+    - why did
+    - why is
