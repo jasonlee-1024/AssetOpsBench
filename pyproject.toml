@@ -25,6 +25,9 @@ dependencies = [
     "claude-agent-sdk>=0.0.14",
     "python-dotenv>=1.0",
     "scipy>=1.10.0",
+    "torch>=2.0",
+    "transformers>=4.40",
+    "datasets>=2.19",
 ]
 
 [project.scripts]
@@ -51,12 +54,6 @@ tsfm = [
     "torch>=2.0",
     "transformers>=4.40",
 ]
-lmtrain = [
-    "torch>=2.0",
-    "transformers>=4.40",
-    "datasets>=2.19",
-]
-
 [tool.uv]
 package = true
 
@@ -66,4 +63,3 @@ norecursedirs = ["src/tmp"]
 filterwarnings = [
     "ignore:Core Pydantic V1 functionality:UserWarning",
 ]
-

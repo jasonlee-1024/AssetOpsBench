@@ -155,6 +155,7 @@ source = { editable = "." }
 dependencies = [
     { name = "claude-agent-sdk" },
     { name = "couchdb3" },
+    { name = "datasets" },
     { name = "fastmcp" },
     { name = "litellm" },
     { name = "mcp", extra = ["cli"] },
@@ -166,6 +167,8 @@ dependencies = [
     { name = "pyyaml" },
     { name = "requests" },
     { name = "scipy" },
+    { name = "torch" },
+    { name = "transformers" },
 ]
 
 [package.dev-dependencies]
@@ -173,11 +176,6 @@ dev = [
     { name = "anyio" },
     { name = "pytest" },
     { name = "pytest-anyio" },
-]
-lmtrain = [
-    { name = "datasets" },
-    { name = "torch" },
-    { name = "transformers" },
 ]
 tsfm = [
     { name = "torch" },
@@ -188,6 +186,7 @@ tsfm = [
 requires-dist = [
     { name = "claude-agent-sdk", specifier = ">=0.0.14" },
     { name = "couchdb3", specifier = ">=2.0.2" },
+    { name = "datasets", specifier = ">=2.19" },
     { name = "fastmcp", specifier = ">=2.14.5" },
     { name = "litellm", specifier = "==1.81.13" },
     { name = "mcp", extras = ["cli"], specifier = ">=1.26.0" },
@@ -199,6 +198,8 @@ requires-dist = [
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "requests", specifier = ">=2.32.5" },
     { name = "scipy", specifier = ">=1.10.0" },
+    { name = "torch", specifier = ">=2.0" },
+    { name = "transformers", specifier = ">=4.40" },
 ]
 
 [package.metadata.requires-dev]
@@ -206,11 +207,6 @@ dev = [
     { name = "anyio", specifier = ">=4.9.0" },
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "pytest-anyio", specifier = ">=0.0.0" },
-]
-lmtrain = [
-    { name = "datasets", specifier = ">=2.19" },
-    { name = "torch", specifier = ">=2.0" },
-    { name = "transformers", specifier = ">=4.40" },
 ]
 tsfm = [
     { name = "torch", specifier = ">=2.0" },

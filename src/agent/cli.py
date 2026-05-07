@@ -18,7 +18,7 @@ from pathlib import Path
 
 _DEFAULT_MODEL = "watsonx/meta-llama/llama-4-maverick-17b-128e-instruct-fp8"
 _LMTRAIN_MODEL_PATH = Path("models/lmtrain")
-_LMTRAIN_THRESHOLD = 0.5
+_LMTRAIN_THRESHOLD = 0.62
 _THINK_TRIGGER = "</think>"
 
 _LOG_FORMAT = "%(asctime)s  %(levelname)-8s  %(name)s  %(message)s"
