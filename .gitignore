@@ -203,4 +203,5 @@ mcp/servers/tsfm/artifacts/tsfm_models/
 src/tmp/
 
 # Local trained model artifacts
-models/
+models/lmtrain/
+models/.DS_Store
