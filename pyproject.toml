@@ -41,6 +41,7 @@ wo-mcp-server = "servers.wo.main:main"
 vibration-mcp-server = "servers.vibration.main:main"
 train-lmtrain = "llm.lmtrain:main"
 rule-router = "llm.rule_based_router:main"
+router-demo = "llm.router_demo:main"
 
 
 [dependency-groups]

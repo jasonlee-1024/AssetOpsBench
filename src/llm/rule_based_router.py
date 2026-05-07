@@ -191,8 +191,25 @@ def route(query: str, use_secondary_rules: bool = False) -> bool:
 
 def fired_signals(query: str, use_secondary_rules: bool = False) -> list[str]:
     """Return the names of rules that fire for a query."""
+    return [
+        status.name
+        for status in rule_statuses(query, use_secondary_rules=use_secondary_rules)
+        if status.fired
+    ]
+
+
+@dataclass(frozen=True)
+class RuleSignalStatus:
+    """Boolean result for a single rule-based routing signal."""
+
+    name: str
+    fired: bool
+
+
+def rule_statuses(query: str, use_secondary_rules: bool = False) -> list[RuleSignalStatus]:
+    """Return True/False status for each checked rule."""
     signals = _PRIMARY_SIGNALS + (_SECONDARY_SIGNALS if use_secondary_rules else [])
-    return [name for name, fn in signals if fn(query)]
+    return [RuleSignalStatus(name=name, fired=fn(query)) for name, fn in signals]
 
 
 @dataclass(frozen=True)
