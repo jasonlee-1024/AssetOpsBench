@@ -11,6 +11,9 @@ from llm import LLMBackend
 from llm.lmtrain import ReasonRoutingLLMBackend
 from llm.rule_based_router import (
     RuleBasedClassifier,
+    explain_route,
+    fired_signals,
+    format_routing_demo,
     has_anomaly_keywords,
     has_causal,
     has_conditional_filter,
@@ -286,6 +289,27 @@ def test_route_secondary_rules_on_catches_forecast():
 def test_route_primary_still_fires_regardless_of_secondary_flag():
     assert route("Estimate total kWh for Chiller 6 in June", use_secondary_rules=False) is True
     assert route("Estimate total kWh for Chiller 6 in June", use_secondary_rules=True) is True
+
+
+def test_fired_signals_reports_matching_rule_names():
+    assert fired_signals("List sites") == []
+    assert fired_signals("Detect bearing faults in WT-105") == ["anomaly"]
+
+
+def test_explain_route_returns_full_decision():
+    decision = explain_route("Detect bearing faults in WT-105")
+
+    assert decision.query == "Detect bearing faults in WT-105"
+    assert decision.signals == ["anomaly"]
+    assert decision.use_secondary_rules is False
+    assert decision.use_thinking is True
+
+
+def test_format_routing_demo_uses_classifier_demo_queries():
+    output = format_routing_demo()
+
+    assert "List sites\t-\tstandard" in output
+    assert "Detect bearing faults in WT-105\tanomaly\tTHINKING" in output
 
 
 # ---------------------------------------------------------------------------

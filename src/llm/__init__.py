@@ -3,7 +3,7 @@
 from .base import LLMBackend
 from .litellm import LiteLLMBackend
 from .lmtrain import ModelBasedRouter, ReasonRoutingLLMBackend, RoutingDecision, ThinkModeClassifier
-from .rule_based_router import RuleBasedClassifier
+from .rule_based_router import RuleBasedClassifier, RuleRoutingDecision
 
 __all__ = [
     "LLMBackend",
@@ -13,4 +13,5 @@ __all__ = [
     "RoutingDecision",
     "ThinkModeClassifier",
     "RuleBasedClassifier",
+    "RuleRoutingDecision",
 ]

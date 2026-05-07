@@ -10,10 +10,18 @@ remove routing signals without touching Python code.
 
 from __future__ import annotations
 
+import argparse
+import json
 import re
+from dataclasses import dataclass
 from pathlib import Path
 
 import yaml
+
+DEMO_QUERIES = (
+    "List sites",
+    "Detect bearing faults in WT-105",
+)
 
 # ---------------------------------------------------------------------------
 # Load keyword config
@@ -151,6 +159,19 @@ def has_causal(query: str) -> bool:
     (e.g. 'what caused', 'how does this work', 'investigate')."""
     return bool(_SECONDARY_CAUSAL_KEYWORD.search(query) or _SECONDARY_CAUSAL_PHRASE.search(query))
 
+
+_PRIMARY_SIGNALS = [
+    ("multi_date", has_multi_date),
+    ("derived_metric", has_derived_metric),
+    ("anomaly", has_anomaly_keywords),
+    ("multi_asset", has_multi_asset),
+    ("conditional", has_conditional_filter),
+]
+_SECONDARY_SIGNALS = [
+    ("forecast", has_forecast),
+    ("causal", has_causal),
+]
+
 # ---------------------------------------------------------------------------
 # Router
 # ---------------------------------------------------------------------------
@@ -165,19 +186,47 @@ def route(query: str, use_secondary_rules: bool = False) -> bool:
     causal/explanatory language. These increase the number of queries routed
     to the reasoning mode to be more conservative about accuracy over latency.
     """
-    signals = [
-        has_multi_date(query),
-        has_derived_metric(query),
-        has_anomaly_keywords(query),
-        has_multi_asset(query),
-        has_conditional_filter(query),
-    ]
-    if use_secondary_rules:
-        signals += [
-            has_forecast(query),
-            has_causal(query),
-        ]
-    return any(signals)
+    return bool(fired_signals(query, use_secondary_rules=use_secondary_rules))
+
+
+def fired_signals(query: str, use_secondary_rules: bool = False) -> list[str]:
+    """Return the names of rules that fire for a query."""
+    signals = _PRIMARY_SIGNALS + (_SECONDARY_SIGNALS if use_secondary_rules else [])
+    return [name for name, fn in signals if fn(query)]
+
+
+@dataclass(frozen=True)
+class RuleRoutingDecision:
+    """Rule-router output for a single query."""
+
+    query: str
+    signals: list[str]
+    use_secondary_rules: bool
+    use_thinking: bool
+
+
+def explain_route(query: str, use_secondary_rules: bool = False) -> RuleRoutingDecision:
+    """Return the routing decision and the rules that caused it."""
+    signals = fired_signals(query, use_secondary_rules=use_secondary_rules)
+    return RuleRoutingDecision(
+        query=query,
+        signals=signals,
+        use_secondary_rules=use_secondary_rules,
+        use_thinking=bool(signals),
+    )
+
+
+def format_routing_demo(
+    queries: tuple[str, ...] = DEMO_QUERIES,
+    use_secondary_rules: bool = False,
+) -> str:
+    """Format deterministic rule-router decisions for a short terminal demo."""
+    rows = ["Query\tSignals\tMode"]
+    for query in queries:
+        decision = explain_route(query, use_secondary_rules=use_secondary_rules)
+        mode = "THINKING" if decision.use_thinking else "standard"
+        rows.append(f"{decision.query}\t{', '.join(decision.signals) or '-'}\t{mode}")
+    return "\n".join(rows)
 
 # ---------------------------------------------------------------------------
 # Classifier adapter
@@ -203,3 +252,58 @@ class RuleBasedClassifier:
         deterministic.
         """
         return route(text, use_secondary_rules=self.use_secondary_rules)
+
+
+def _build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Run the deterministic rule-based thinking-mode router.",
+    )
+    parser.add_argument(
+        "--demo",
+        action="store_true",
+        help="Run the two-query rule-router demo.",
+    )
+    parser.add_argument(
+        "--route",
+        metavar="QUERY",
+        help="Route a single query instead of running the demo.",
+    )
+    parser.add_argument(
+        "--secondary",
+        action="store_true",
+        help="Enable secondary forecast/causal rules.",
+    )
+    return parser
+
+
+def _run_single_route(query: str, use_secondary_rules: bool) -> None:
+    decision = explain_route(query, use_secondary_rules=use_secondary_rules)
+    mode = "THINKING" if decision.use_thinking else "standard"
+    print(
+        json.dumps(
+            {
+                "query": decision.query,
+                "signals": decision.signals,
+                "use_secondary_rules": decision.use_secondary_rules,
+                "use_thinking": decision.use_thinking,
+                "mode": mode,
+            },
+            indent=2,
+        )
+    )
+
+
+def main() -> None:
+    """Run rule-router inference from the command line."""
+    args = _build_parser().parse_args()
+    if args.route is not None:
+        _run_single_route(args.route, use_secondary_rules=args.secondary)
+        return
+    if args.demo:
+        print(format_routing_demo(use_secondary_rules=args.secondary))
+        return
+    print(format_routing_demo(use_secondary_rules=args.secondary))
+
+
+if __name__ == "__main__":
+    main()
