@@ -12,8 +12,10 @@ from llm.lmtrain import ReasonRoutingLLMBackend
 from llm.rule_based_router import (
     RuleBasedClassifier,
     has_anomaly_keywords,
+    has_causal,
     has_conditional_filter,
     has_derived_metric,
+    has_forecast,
     has_multi_asset,
     has_multi_date,
     route,
@@ -222,3 +224,105 @@ def test_integration_does_not_double_append_existing_trigger():
     router = ReasonRoutingLLMBackend(base, RuleBasedClassifier(), think_trigger="</think>")
     router.generate("Why is the RPM out of range? </think>")
     assert base.last_prompt.count("</think>") == 1
+
+
+# ---------------------------------------------------------------------------
+# has_forecast (secondary)
+# ---------------------------------------------------------------------------
+
+def test_forecast_fires_on_predict():
+    assert has_forecast("Predict the energy output for next week") is True
+
+def test_forecast_fires_on_forecast():
+    assert has_forecast("Forecast the chiller load for next month") is True
+
+def test_forecast_fires_on_trend():
+    assert has_forecast("What is the trend in COP over the past quarter?") is True
+
+def test_forecast_silent_on_historical_query():
+    assert has_forecast("Retrieve power input data for 2020-06-07") is False
+
+def test_forecast_silent_on_status_query():
+    assert has_forecast("What sensors are available for Chiller 6?") is False
+
+
+# ---------------------------------------------------------------------------
+# has_causal (secondary)
+# ---------------------------------------------------------------------------
+
+def test_causal_fires_on_explain():
+    assert has_causal("Explain the drop in COP observed on 2020-06-03") is True
+
+def test_causal_fires_on_what_caused():
+    assert has_causal("What caused the spike in condenser water temperature?") is True
+
+def test_causal_fires_on_how_does():
+    assert has_causal("How does supply temperature affect chiller efficiency?") is True
+
+def test_causal_fires_on_investigate():
+    assert has_causal("Investigate the load imbalance on 2020-06-07") is True
+
+def test_causal_silent_on_retrieval():
+    assert has_causal("Retrieve the tonnage readings for Chiller 6 on 2020-06-01") is False
+
+def test_causal_silent_on_list_query():
+    assert has_causal("List all sensors available at site MAIN") is False
+
+
+# ---------------------------------------------------------------------------
+# route() with use_secondary_rules
+# ---------------------------------------------------------------------------
+
+def test_route_secondary_rules_off_by_default():
+    # "How does" fires causal but not any primary signal
+    assert route("How does ambient temperature affect COP?") is False
+
+def test_route_secondary_rules_on_catches_causal():
+    assert route("How does ambient temperature affect COP?", use_secondary_rules=True) is True
+
+def test_route_secondary_rules_on_catches_forecast():
+    assert route("Predict the energy demand for next week", use_secondary_rules=True) is True
+
+def test_route_primary_still_fires_regardless_of_secondary_flag():
+    assert route("Estimate total kWh for Chiller 6 in June", use_secondary_rules=False) is True
+    assert route("Estimate total kWh for Chiller 6 in June", use_secondary_rules=True) is True
+
+
+# ---------------------------------------------------------------------------
+# Routing table — run with `pytest -s` to print
+# This table displays what signals fire for each real vibration scenario, and
+# how many are routed to thinking mode under primary-only vs.
+# primary+secondary rules.
+# ---------------------------------------------------------------------------
+
+_ALL_SIGNALS = [
+    ("multi_date", has_multi_date),
+    ("derived_metric", has_derived_metric),
+    ("anomaly", has_anomaly_keywords),
+    ("multi_asset", has_multi_asset),
+    ("conditional", has_conditional_filter),
+    ("forecast", has_forecast),
+    ("causal", has_causal),
+]
+
+
+def _fired_signals(query: str, use_secondary_rules: bool) -> list[str]:
+    signals = _ALL_SIGNALS[:5] + (_ALL_SIGNALS[5:] if use_secondary_rules else [])
+    return [name for name, fn in signals if fn(query)]
+
+
+def test_routing_table(capsys):
+    scenarios = json.loads(_SCENARIO_FILE.read_text())
+
+    with capsys.disabled():
+        for use_secondary_rules, label in [(False, "primary only"), (True, "primary + secondary")]:
+            n_think = sum(1 for s in scenarios if route(s["text"], use_secondary_rules=use_secondary_rules))
+            n = len(scenarios)
+            print(f"\n── Routing mode: {label} ──  thinking: {n_think}/{n} ({n_think/n*100:.0f}%)  standard: {n-n_think}/{n} ({(n-n_think)/n*100:.0f}%)\n")
+            print(f"{'ID':<5} {'Category':<22} {'Mode':<10} {'Signals fired':<45} Query")
+            print("─" * 120)
+            for s in scenarios:
+                q = s["text"]
+                signals = _fired_signals(q, use_secondary_rules)
+                mode = "THINKING" if signals else "standard"
+                print(f"{s['id']:<5} {s.get('category', ''):<22} {mode:<10} {', '.join(signals) or '—':<45} {q[:45]}")
