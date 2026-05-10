@@ -12,10 +12,10 @@
 
 - **Team Name:** Team 21
 - **Members:**
-  - Shen Li (sl6008) — *Profiling script, thinking mode integration*
-  - Charles Xu (tx2263) — *Thinking mode classifier training, model-based router*
-  - Ann Li (acl2246) — *Rule-based router, updated proposal for mentor project resubmission, general documentation & reports*
-  - Caroline Cahill (clc2240) — *Data preparation (label data with llm), trained thinking mode classifier on labeled data, W&B logging, presentations*
+  - Shen Li (sl6008) — [@jasonlee-1024](https://github.com/jasonlee-1024) — *Profiling script, thinking mode integration*
+  - Charles Xu (tx2263) — [@Char15Xu](https://github.com/Char15Xu) — *Thinking mode classifier training, model-based router*
+  - Ann Li (acl2246) — [@anncli](https://github.com/anncli) — *Rule-based router, updated proposal for mentor project resubmission, general documentation & reports*
+  - Caroline Cahill (clc2240) — [@caroline-cahill](https://github.com/caroline-cahill) — *Data preparation (label data with llm), trained thinking mode classifier on labeled data, W&B logging, presentations*
 
 ## Submission
 
