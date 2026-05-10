@@ -249,7 +249,7 @@ A short narrative (3–6 bullets) summarizing what you found. Include 1–2 repr
 
 **Specific purpose:** Clarifying concepts (vLLM thinking-mode internals, DistilBERT fine-tuning, MCP protocol); debugging runtime errors (CUDA OOM during classifier training, CouchDB connection handling, MCP stdio transport issues); polishing prose in the report and README; and assisting with Git workflows (branch management, resolving merge conflicts).
 
-**Sections affected:** `src/llm/lmtrain.py` (training loop debugging), `src/llm/rule_based_router.py` (keyword pattern refinement), `scripts/bench_latency.py` (threading and timeout fixes), README (§6 results narrative, this disclosure), report §III Methodology and §V Discussion.
+**Sections affected:** `src/llm/lmtrain.py` (training loop debugging), `src/llm/rule_based_router.py` (keyword pattern refinement), `scripts/bench_latency.py` (threading and timeout fixes), `src/llm/test_rule_based_router.py` (sample scenarios for unit tests), README (this disclosure), report §III Methodology, §V Discussion, and formatting.
 
 **How we verified correctness:** Re-ran all reported experiments ourselves and confirmed numbers match the W&B dashboard; reviewed every AI-suggested code change line-by-line before committing; all router unit tests pass on the final codebase.
 
@@ -275,7 +275,7 @@ If you build on this work, please cite:
 
 ### Contact
 
-Open a GitHub Issue or email *[team-contact@columbia.edu]*.
+Open a GitHub Issue or email *[sl6008@columbia.edu]*.
 
 ---
 
