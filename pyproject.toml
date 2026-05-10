@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/agent", "src/llm"]
+packages = ["src/agent", "src/workflow", "src/llm"]
 
 [project]
 name = "assetopsbench-mcp"
@@ -32,6 +32,7 @@ dependencies = [
 
 [project.scripts]
 plan-execute = "agent.cli:main"
+plan-execute-workflow = "workflow.cli:main"
 claude-agent = "agent.claude_agent.cli:main"
 iot-mcp-server = "servers.iot.main:main"
 utilities-mcp-server = "servers.utilities.main:main"
@@ -43,7 +44,24 @@ train-lmtrain = "llm.lmtrain:main"
 rule-router = "llm.rule_based_router:main"
 router-demo = "llm.router_demo:main"
 
-
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.0.2",
+    "anyio>=4.9.0",
+    "pytest-anyio>=0.0.0",
+]
+tsfm = [
+    "torch>=2.0",
+    "transformers>=4.40",
+]
+train = [
+    "torch>=2.0",
+    "transformers>=4.40",
+    "datasets>=2.19",
+    "huggingface-hub>=1.5.0",
+    "wandb>=0.15",
+    "accelerate>=1.1.0",
+]
 [dependency-groups]
 dev = [
     "pytest>=9.0.2",

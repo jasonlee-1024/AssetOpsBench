@@ -357,6 +357,7 @@ def _build_parser() -> argparse.ArgumentParser:
         description="Train or run the thinking-mode model router.",
     )
     parser.add_argument(
+        "-demo",
         "--demo",
         action="store_true",
         help="Run the two-query model-router demo instead of training.",

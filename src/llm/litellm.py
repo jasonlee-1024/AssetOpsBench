@@ -28,10 +28,15 @@ class LiteLLMBackend(LLMBackend):
                   ``"litellm_proxy/GCP/claude-4-sonnet"``
     """
 
-    def __init__(self, model_id: str) -> None:
+    def __init__(
+        self,
+        model_id: str,
+        truncate_prompt_tokens: int | None = 100_000,
+    ) -> None:
         self._model_id = model_id
+        self._truncate_prompt_tokens = truncate_prompt_tokens
 
-    def generate(self, prompt: str, temperature: float = 0.0) -> str:
+    def generate(self, prompt: str, temperature: float = 0.0, enable_thinking: bool = False) -> str:
         import litellm
 
         kwargs: dict = {
@@ -40,6 +45,12 @@ class LiteLLMBackend(LLMBackend):
             "temperature": temperature,
             "max_tokens": 2048,
         }
+
+        if self._truncate_prompt_tokens is not None:
+            kwargs["truncate_prompt_tokens"] = self._truncate_prompt_tokens
+
+        if enable_thinking:
+            kwargs["extra_body"] = {"chat_template_kwargs": {"enable_thinking": True}}
 
         if self._model_id.startswith("watsonx/"):
             kwargs["api_key"] = os.environ["WATSONX_APIKEY"]

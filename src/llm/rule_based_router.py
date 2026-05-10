@@ -276,6 +276,7 @@ def _build_parser() -> argparse.ArgumentParser:
         description="Run the deterministic rule-based thinking-mode router.",
     )
     parser.add_argument(
+        "-demo",
         "--demo",
         action="store_true",
         help="Run the two-query rule-router demo.",

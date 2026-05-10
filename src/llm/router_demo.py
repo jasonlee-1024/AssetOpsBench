@@ -80,6 +80,12 @@ def _build_parser() -> argparse.ArgumentParser:
         description="Run both thinking-router demos with detailed output.",
     )
     parser.add_argument(
+        "-demo",
+        "--demo",
+        action="store_true",
+        help="Run the combined router demo. This is the default behavior.",
+    )
+    parser.add_argument(
         "--model-path",
         default=str(OUTPUT_DIR),
         help=f"Path to the trained model-router directory (default: {OUTPUT_DIR}).",
