@@ -59,7 +59,7 @@ Briefly describe the model(s) and stack you used:
 | Clarity & Justification         | 61%        | 82%     | 85%     | 92%       |
 | Hallucination Rate.             | 12%        | 9%      | 7%      | 5%        |
 
-**Hardware:** [1× NVIDIA A100 80 GB SXM4 (RunPod), PyTorch 2.4.0, vLLM 0.19.0, CUDA 12.4, and Python 3.11]
+**Hardware:** 1× NVIDIA A100 80 GB SXM4 (RunPod), PyTorch 2.4.0, vLLM 0.19.0, CUDA 12.4, and Python 3.11
 
 **Headline result (one sentence):** *Using a classifier model to route scenarios saved 5.64% of latency overhead while only dropping 5 pp accuracy in task completion, while a rule-based router saved 7.11% latency at the cost of 8pp drop in task completion.*
 
@@ -183,12 +183,12 @@ python src/eval.py --weights checkpoints/best_model.pth
 
 A short narrative (3–6 bullets) summarizing what you found. Include 1–2 representative figures from `results/` directly in this README so a reader gets the gist without opening Wandb.
 
-- *Optimization 1 (e.g., torch.compile + bfloat16):* X% latency reduction, attributable to [reason].
-- *Optimization 2 (e.g., FlashAttention-2):* Y% memory reduction at long context lengths.
-- *Optimization 3 (e.g., paged KV cache):* Z× throughput gain at batch size 32.
-- *What did not work:* [briefly note any optimization that failed or regressed performance, and why you think it failed].
-
-![Baseline vs Optimized latency](results/figures/latency_comparison.png)
+- *Thinking vs. Non-Thinking Mode Latency:* 21.5% more end-to-end latency (+3.241s per scenario on average) with reasoning/thinking mode turned on.
+- *Bottleneck is in the Planning Phase:* 41.9% increase in latency in the planning phase (+2.767s) with thinking mode turned on.
+- *Rule-Based Routing:* recovers most of the accuracy lost without always-on while cutting 1.216s off always-on latency, with the benefit of zero LLM overhead at routing time.
+- *Classifier Model Routing:* higher accuracy than rule-based across four accuracy dimensions at the cost of only +0.238s additional latency.
+- *What did not work:* Neither routing strategy fully closes the accuracy gap compared to always-on reasoning. Due to time and resource constraints trained scenarios are LLM-labeled as simple or complex for classifier router training, which may not be as accurate as labels from actual profiling results leading to sub-optimal accuracy.
+![Always-Off vs. Always-On Accuracies](results/figures/base_accuracies.png)
 
 ---
 
