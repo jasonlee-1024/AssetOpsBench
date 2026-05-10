@@ -70,25 +70,29 @@ Briefly describe the model(s) and stack you used:
 ```
 .
 ├── README.md
+├── README_AssetOpsBench.md       # Original upstream AssetOpsBench README
 ├── LICENSE
-├── requirements.txt
-├── configs/                # YAML / JSON configs for every reported experiment
-├── deliverables/           # Final report (PDF) and final presentation (PPT/PDF) — same files uploaded to CourseWorks
+├── pyproject.toml                # Project dependencies and console entry points
+├── uv.lock                       # Reproducible Python dependency lockfile
+├── deliverables/                 # Final report and presentation submitted to CourseWorks
 │   ├── HPML_Final_Report.pdf
-│   └── HPML_Final_Presentation.pptx
-├── scripts/
-│   ├── download_dataset.sh
-│   ├── run_baseline.sh
-│   └── run_optimized.sh
+│   └── HPML_Final_Presentation.pdf
+├── scripts/                      # Profiling and latency evaluation
+│   └── bench_latency.py
 ├── src/
-│   ├── data/               # Data loading & preprocessing
-│   ├── models/             # Model definitions / wrappers
-│   ├── train.py            # Training entry point
-│   ├── eval.py             # Evaluation entry point
-│   └── profile.py          # Profiling entry point
-├── notebooks/              # Exploratory & analysis notebooks
-├── results/                # Logs, figures, profiler traces (small files only)
-└── docs/                   # Optional: extended methodology, design notes
+│   ├── agent/                    # Plan-execute agent used by the optimized pipeline
+│   └── llm/
+│       ├── lmtrain.py            # DistilBERT model-router training and inference CLI
+│       ├── rule_based_router.py  # Deterministic rule-based thinking router
+│       ├── router_demo.py        # Combined rule/model router visualization demo
+│       ├── rule_based_router_keywords.yaml
+│       ├── base.py               # Shared LLM backend interface
+│       ├── litellm.py            # LiteLLM backend with thinking-mode support
+│       └── test_*.py             # Router and training unit tests
+├── results/
+│   ├── figures/base_accuracies.png
+│   └── dashboard/DistilBERT Classifier Training Weights & Biases Report.pdf
+└── docs/guideline/               # Upstream scenario and ground-truth design guides
 ```
 
 ---
@@ -127,7 +131,7 @@ pip install git+https://github.com/ibm-granite/granite-tsfm
 
 Public experiment-tracking dashboard with training and evaluation metrics, system profiling, and baseline vs. optimized comparisons:
 
-> **🔗 Dashboard:** [https://wandb.ai/&lt;team&gt;/&lt;project&gt;](https://wandb.ai/team/project)
+> **🔗 Dashboard:** [https://wandb.ai/ccahill19-columbia-university/hpml-semester-project/reports/HPML-Semester-Project-Classifier-Training-Run--VmlldzoxNjcxNzY3Ng?accessToken=2uqguvqiwavm74krgbytv60mw8ytlc8m8d770933wessmzm8mbghoiwkakajy1p8](https://wandb.ai)
 >
 > *Platform used:* [Weights & Biases / MLflow / TensorBoard / Comet / Neptune / other]
 
@@ -232,9 +236,9 @@ A short narrative (3–6 bullets) summarizing what you found. Include 1–2 repr
 **Did your team use any AI tool in completing this project?**
 
 - [ ] No, we did not use any AI tool.
-- [ ] Yes, we used AI assistance as described below.
+- [x] Yes, we used AI assistance as described below.
 
-**Tool(s) used:** *e.g., ChatGPT, Claude, GitHub Copilot, Cursor*
+**Tool(s) used:** ChatGPT, Claude
 
 **Specific purpose:** *e.g., debugged a CUDA OOM error, clarified SM occupancy, polished prose in the report's introduction*
 
