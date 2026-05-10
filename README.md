@@ -124,6 +124,8 @@ pip install -U pip
 pip install -e ".[dev,train]"
 ```
 
+**Note on `requirements.txt`:** This project uses `pyproject.toml` instead of a `requirements.txt` or `environment.yml` file for compatibility with the upstream AssetOpsBench package structure. Follow the steps below to set up the requirements.
+
 **Environment choice:** The root `pyproject.toml` is the source of truth for this project, and `uv.lock` provides the reproducible Python lockfile. A separate Conda environment is not required. Use Conda only if your machine needs Conda-managed CUDA/PyTorch packages; still install this repository from `pyproject.toml` inside that environment.
 
 **System requirements:** Python 3.12, CUDA 12.x for GPU-backed training/inference, and an NVIDIA A100-class GPU for reproducing the reported Gemma/vLLM experiments. CPU is sufficient for the rule-based router demo.
@@ -138,9 +140,9 @@ pip install git+https://github.com/ibm-granite/granite-tsfm
 
 Public experiment-tracking dashboard with training and evaluation metrics, system profiling, and baseline vs. optimized comparisons:
 
-> **🔗 Dashboard:** [https://wandb.ai/ccahill19-columbia-university/hpml-semester-project/reports/HPML-Semester-Project-Classifier-Training-Run--VmlldzoxNjcxNzY3Ng?accessToken=2uqguvqiwavm74krgbytv60mw8ytlc8m8d770933wessmzm8mbghoiwkakajy1p8](https://wandb.ai)
+> **🔗 Dashboard:** [https://api.wandb.ai/links/ccahill19-columbia-university/pi21cc6x](https://api.wandb.ai/links/ccahill19-columbia-university/pi21cc6x)
 >
-> *Platform used:* [Weights & Biases / MLflow / TensorBoard / Comet / Neptune / other]
+> *Platform used:* Weights & Biases
 
 Verify the link opens in an incognito browser. The dashboard includes a curated **report** that walks through the optimization story. If your platform does not support public links (e.g., self-hosted MLflow), a static export is committed under `results/dashboard/` instead.
 
@@ -232,8 +234,8 @@ A short narrative (3–6 bullets) summarizing what you found. Include 1–2 repr
 
 ## 7. Notes
 
-- Source files live under `src/`, configuration under `configs/`, and scripts under `scripts/`.
-- Trained checkpoints are stored in [GitHub Releases / Hugging Face Hub / external bucket] — see `docs/checkpoints.md`.
+- Source files live under `src/` and scripts under `scripts/`.
+- Trained checkpoints (DistilBERT model-router) are stored in [Google Drive](https://drive.google.com/drive/folders/1IPu7DTyfUZk-S-dwsvLQtVua9AyBnO-o?usp=sharing) (requires LionMail login).
 - All secrets (API keys, Wandb tokens) are loaded from environment variables. See `.env.example`.
 
 ### AI Use Disclosure
