@@ -80,7 +80,14 @@ Briefly describe the model(s) and stack you used:
 ├── scripts/                      # Profiling and latency evaluation
 │   └── bench_latency.py
 ├── src/
-│   ├── agent/                    # Plan-execute agent used by the optimized pipeline
+│   ├── agent/                    # Plan-execute agent with router integration (optimized pipeline)
+│   ├── workflow/                 # Baseline plan-execute runner with a direct thinking: bool flag
+│   │   ├── runner.py             # PlanExecuteRunner (thinking on/off for always-on/always-off baselines)
+│   │   ├── planner.py            # Planner with optional thinking-mode prompt injection
+│   │   ├── executor.py           # MCP tool dispatcher
+│   │   ├── models.py             # Shared data models (Plan, PlanStep, OrchestratorResult)
+│   │   ├── cli.py                # plan-execute-workflow entry point
+│   │   └── tests/                # Unit tests for workflow components
 │   └── llm/
 │       ├── lmtrain.py            # DistilBERT model-router training and inference CLI
 │       ├── rule_based_router.py  # Deterministic rule-based thinking router
