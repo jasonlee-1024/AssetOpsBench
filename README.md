@@ -30,7 +30,7 @@ The final report PDF and the presentation file are checked into the `deliverable
 
 ## 1. Problem Statement
 
-A 2–4 sentence description of the workload, the system being optimized, and *why* the optimization matters. State whether you are targeting **training**, **inference**, or **both**, and identify the bottleneck (compute, memory bandwidth, I/O, communication, etc.) you set out to address.
+This project provides the first systematic performance characterization of the AssetOpsBench plan-execute pipeline. By comparing Gemma 4 26B with and without thinking mode, we quantify the latency and accuracy tradeoff of whether thinking mode is worthwhile for industrial asset operations tasks. We identified the planning phase of the inference as the main bottleneck when thinking mode is enabled. To optimize, we implemented a rules-based router and a DistilBERT Classifier to label and route complex tasks to a thinking-enabled planner and simple tasks to a standard planner to balance the latency-accuracy tradeoff.
 
 ---
 
@@ -38,31 +38,30 @@ A 2–4 sentence description of the workload, the system being optimized, and *w
 
 Briefly describe the model(s) and stack you used:
 
-- **Model architecture:** e.g., Llama-3.1 8B, ResNet-50, Stable Diffusion XL.
-- **Framework:** PyTorch 2.x / JAX / TensorFlow / vLLM / TGI.
-- **Dataset:** name, size, license, and link.
-- **Custom layers or modifications:** anything you changed from the upstream reference implementation.
-- **Hardware target:** NVIDIA A100 / H100 / Jetson Orin / Cloud TPU v5e / Apple M-series / IBM AIU, etc.
+- **Model architecture:** Google Gemma 4 26B (thinking vs. non-thinking), AssetOpsBench's Plan-Execute Pipeline as agent
+- **Framework:** PyTorch 2.4.0, vLLM 0.19.0 as the inference server, CUDA 12.4, and Python 3.11
+- **Dataset:** We used the [AssetOpsBench dataset from IBM Research](https://huggingface.co/datasets/ibm-research/AssetOpsBench) with an Apache 2.0 license. We used the train split of the “scenarios” subset containing 152 scenarios. We selected 40 scenarios for profiling.
+- **Custom layers or modifications:** Our profiling and optimizations are modular and directly builds on-top of the upstream AssetOpsBench repository for clean open-source contribution.
+- **Hardware target:** NVIDIA A100 GPU
+
 
 ---
 
 ## 3. Final Results Summary
 
-Replace the numbers below with your measured values. Add or remove rows to fit your study.
+| Metric                          | Always Off | Rule    | Model   | Always On |
+| ------------------------------- | ---------- | ------- | ------- | --------- |
+| Time                            | 15.082s    | 17.107s | 17.345s | 18.323s   |
+| Task Completion                 | 62%        | 70%     | 73%     | 78%       |
+| Data Retrieval Accuracy         | 100%       | 100%    | 100%    | 100%      |
+| Generalized Result Verification | 65%        | 68%     | 71%     | 75%       |
+| Agent Sequence Correctness      | 88%        | 88%     | 88%     | 88%       |
+| Clarity & Justification         | 61%        | 82%     | 85%     | 92%       |
+| Hallucination Rate.             | 12%        | 9%      | 7%      | 5%        |
 
-| Metric                       | Baseline | Optimized | Δ (Improvement) |
-| ---------------------------- | -------- | --------- | --------------- |
-| Top-1 Accuracy / Task Metric | XX.XX%   | XX.XX%    | ±X.XX pp        |
-| Inference Latency (p50)      | XX.XX ms | XX.XX ms  | XX% faster      |
-| Inference Throughput         | XXX tok/s| XXX tok/s | XX× higher      |
-| Training Time / Epoch        | XX s     | XX s      | XX% faster      |
-| Peak GPU Memory              | XX GB    | XX GB     | XX% less        |
-| Model Size on Disk           | XX MB    | XX MB     | XX% smaller     |
-| Energy / Sample (optional)   | X.XX J   | X.XX J    | XX% less        |
+**Hardware:** [1× NVIDIA A100 80 GB SXM4 (RunPod), PyTorch 2.4.0, vLLM 0.19.0, CUDA 12.4, and Python 3.11]
 
-**Hardware:** [e.g., 1× NVIDIA A100 80GB SXM, CUDA 12.4, PyTorch 2.5, Ubuntu 22.04]
-
-**Headline result (one sentence):** *e.g., "Applying LoRA + 4-bit quantization reduced fine-tuning memory from 38 GB to 9 GB and cut wall-clock training time per epoch by 2.7× on a single A100, with no measurable accuracy degradation on the GLUE benchmark."*
+**Headline result (one sentence):** *Using a classifier model to route scenarios saved 5.64% of latency overhead while only dropping 5 pp accuracy in task completion, while a rule-based router saved 7.11% latency at the cost of 8pp drop in task completion.*
 
 ---
 
