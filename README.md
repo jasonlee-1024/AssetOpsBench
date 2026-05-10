@@ -247,11 +247,11 @@ A short narrative (3–6 bullets) summarizing what you found. Include 1–2 repr
 
 **Tool(s) used:** ChatGPT, Claude
 
-**Specific purpose:** *e.g., debugged a CUDA OOM error, clarified SM occupancy, polished prose in the report's introduction*
+**Specific purpose:** Clarifying concepts (vLLM thinking-mode internals, DistilBERT fine-tuning, MCP protocol); debugging runtime errors (CUDA OOM during classifier training, CouchDB connection handling, MCP stdio transport issues); polishing prose in the report and README; and assisting with Git workflows (branch management, resolving merge conflicts).
 
-**Sections affected:** *e.g., src/profile.py setup, README §6 results narrative, report §V Discussion*
+**Sections affected:** `src/llm/lmtrain.py` (training loop debugging), `src/llm/rule_based_router.py` (keyword pattern refinement), `scripts/bench_latency.py` (threading and timeout fixes), README (§6 results narrative, this disclosure), report §III Methodology and §V Discussion.
 
-**How we verified correctness:** *e.g., re-ran every reported experiment ourselves; confirmed profiler-trace interpretations against the raw traces in results/; rewrote AI-suggested code in our own words and confirmed it produces the same numbers as the version we hand-wrote.*
+**How we verified correctness:** Re-ran all reported experiments ourselves and confirmed numbers match the W&B dashboard; reviewed every AI-suggested code change line-by-line before committing; all router unit tests pass on the final codebase.
 
 By submitting this project, the team confirms that the analysis, interpretations, and conclusions are our own, and that any AI assistance is fully disclosed above. The same disclosure block appears as an appendix in the final report.
 
