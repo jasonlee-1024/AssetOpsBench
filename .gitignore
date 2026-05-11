@@ -201,9 +201,7 @@ mcp/couchdb/sample_data/bulk_docs.json
 .env
 mcp/servers/tsfm/artifacts/tsfm_models/
 src/tmp/
-models/**/*.safetensors
-models/**/*.pt
-models/**/*.pth
-models/**/*.bin
-models/**/checkpoint-*/
-wandb/
+
+# Local trained model artifacts
+models/lmtrain/
+models/.DS_Store

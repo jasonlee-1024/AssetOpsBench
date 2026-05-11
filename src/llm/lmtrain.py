@@ -18,9 +18,16 @@ MODEL_NAME = "distilbert-base-uncased"
 EPOCHS = 3
 BATCH_SIZE = 16
 LEARNING_RATE = 2e-5
-THRESHOLD = 0.5
+# The trained classifier is not calibrated around 0.50; on the current model,
+# simple retrievals score around 0.55-0.60 while complex diagnostic queries
+# score above 0.62.
+THRESHOLD = 0.62
 EVAL_OUTPUT_PATH: Path | None = None
 SEED = 42
+DEMO_QUERIES = (
+    "List sites",
+    "Detect bearing faults in WT-105",
+)
 
 
 def _load_and_split_examples(path: Path, seed: int) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -124,17 +131,21 @@ class ThinkModeClassifier:
 
     model: Any
     tokenizer: Any
+    device: str = "cpu"
 
     @classmethod
-    def load(cls, model_path: str | Path) -> "ThinkModeClassifier":
+    def load(cls, model_path: str | Path, device: str | None = None) -> "ThinkModeClassifier":
         """Load a classifier model from local path or HF model id."""
         from transformers import AutoModelForSequenceClassification, AutoTokenizer
+        import torch
 
         path = str(model_path)
         tokenizer = AutoTokenizer.from_pretrained(path)
         model = AutoModelForSequenceClassification.from_pretrained(path)
+        resolved_device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+        model.to(resolved_device)
         model.eval()
-        return cls(model=model, tokenizer=tokenizer)
+        return cls(model=model, tokenizer=tokenizer, device=resolved_device)
 
     def predict_proba(self, text: str) -> float:
         """Return P(label=true) for a single text."""
@@ -146,6 +157,7 @@ class ThinkModeClassifier:
             max_length=512,
             return_tensors="pt",
         )
+        inputs = {key: value.to(self.device) for key, value in inputs.items()}
         with torch.no_grad():
             logits = self.model(**inputs).logits
             probs = torch.softmax(logits, dim=-1)
@@ -154,6 +166,79 @@ class ThinkModeClassifier:
     def should_use_thinking(self, text: str, threshold: float = 0.5) -> bool:
         """Return True if the model predicts thinking mode should be used."""
         return self.predict_proba(text) >= threshold
+
+
+@dataclass(frozen=True)
+class RoutingDecision:
+    """Model-router output for a single query."""
+
+    query: str
+    probability: float
+    threshold: float
+    use_thinking: bool
+
+
+@dataclass
+class ModelBasedRouter:
+    """Route queries to thinking mode using a trained ThinkModeClassifier."""
+
+    classifier: ThinkModeClassifier
+    threshold: float = THRESHOLD
+
+    @classmethod
+    def load(
+        cls,
+        model_path: str | Path = OUTPUT_DIR,
+        threshold: float = THRESHOLD,
+        device: str | None = None,
+    ) -> "ModelBasedRouter":
+        """Load a trained router from a Hugging Face model directory."""
+        return cls(
+            classifier=ThinkModeClassifier.load(model_path, device=device),
+            threshold=threshold,
+        )
+
+    def route(self, query: str) -> RoutingDecision:
+        """Return the full routing decision for a query."""
+        probability = self.classifier.predict_proba(query)
+        return RoutingDecision(
+            query=query,
+            probability=probability,
+            threshold=self.threshold,
+            use_thinking=probability >= self.threshold,
+        )
+
+    def should_use_thinking(self, text: str, threshold: float | None = None) -> bool:
+        """Expose the classifier interface expected by ReasonRoutingLLMBackend."""
+        effective_threshold = self.threshold if threshold is None else threshold
+        return self.classifier.should_use_thinking(text, effective_threshold)
+
+
+def route_with_model(
+    query: str,
+    model_path: str | Path = OUTPUT_DIR,
+    threshold: float = THRESHOLD,
+    device: str | None = None,
+) -> bool:
+    """Return True when the trained model routes the query to thinking mode."""
+    router = ModelBasedRouter.load(model_path=model_path, threshold=threshold, device=device)
+    return router.route(query).use_thinking
+
+
+def format_routing_demo(
+    router: ModelBasedRouter,
+    queries: tuple[str, ...] = DEMO_QUERIES,
+) -> str:
+    """Format model-router decisions for a short terminal demo."""
+    rows = ["Query\tP(thinking)\tThreshold\tMode"]
+    for query in queries:
+        decision = router.route(query)
+        mode = "THINKING" if decision.use_thinking else "standard"
+        rows.append(
+            f"{decision.query}\t{decision.probability:.4f}\t"
+            f"{decision.threshold:.2f}\t{mode}"
+        )
+    return "\n".join(rows)
 
 
 class ReasonRoutingLLMBackend(LLMBackend):
@@ -255,7 +340,7 @@ def train(
 
     if eval_ds is None:
         return None
-    
+
     prediction_output = trainer.predict(eval_ds)
     logits = prediction_output.predictions
     labels = prediction_output.label_ids.astype(int).tolist()
@@ -281,8 +366,60 @@ def train(
     return report
 
 
+def _build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Train or run the thinking-mode model router.",
+    )
+    parser.add_argument(
+        "-demo",
+        "--demo",
+        action="store_true",
+        help="Run the two-query model-router demo instead of training.",
+    )
+    parser.add_argument(
+        "--route",
+        metavar="QUERY",
+        help="Route a single query with the trained model instead of training.",
+    )
+    parser.add_argument(
+        "--model-path",
+        default=str(OUTPUT_DIR),
+        help=f"Path to the trained router model directory (default: {OUTPUT_DIR}).",
+    )
+    parser.add_argument(
+        "--threshold",
+        type=float,
+        default=THRESHOLD,
+        help=f"Thinking-mode threshold (default: {THRESHOLD}).",
+    )
+    return parser
+
+
+def _run_demo(model_path: str | Path, threshold: float) -> None:
+    router = ModelBasedRouter.load(model_path=model_path, threshold=threshold)
+    print(format_routing_demo(router))
+
+
+def _run_single_route(query: str, model_path: str | Path, threshold: float) -> None:
+    router = ModelBasedRouter.load(model_path=model_path, threshold=threshold)
+    decision = router.route(query)
+    mode = "THINKING" if decision.use_thinking else "standard"
+    print(
+        json.dumps(
+            {
+                "query": decision.query,
+                "probability": decision.probability,
+                "threshold": decision.threshold,
+                "use_thinking": decision.use_thinking,
+                "mode": mode,
+            },
+            indent=2,
+        )
+    )
+
+
 def main() -> None:
-    """Train using script-level constants defined at the top of this file."""
+    """Train by default, or run model-router inference with CLI flags."""
     try:
         # initializing w&b
         wandb.init(
@@ -300,7 +437,19 @@ def main() -> None:
         )
     except Exception as e:
         print(f"W&B logging not available: {e}")
-   
+        
+    args = _build_parser().parse_args()
+    if args.demo:
+        _run_demo(model_path=args.model_path, threshold=args.threshold)
+        return
+    if args.route is not None:
+        _run_single_route(
+            query=args.route,
+            model_path=args.model_path,
+            threshold=args.threshold,
+        )
+        return
+
     train(
         data_file=DATA_FILE,
         output_dir=OUTPUT_DIR,
