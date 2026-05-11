@@ -20,8 +20,8 @@
 ## Submission
 
 - **GitHub repository:** [https://github.com/jasonlee-1024/AssetOpsBench](https://github.com/jasonlee-1024/AssetOpsBench/tree/main)
-- **Final report:** [`deliverables/HPML_Final_Report.pdf`](deliverables/HPML_Final_Report.pdf)
-- **Final presentation:** [`deliverables/HPML_Final_Presentation.pdf`](deliverables/HPML_Final_Presentation.pdf)
+- **Final report:** [`deliverables/Team21_HPML_Final_Report.pdf`](deliverables/Team21_HPML_Final_Report.pdf)
+- **Final presentation:** [`deliverables/Team21_HPML_Final_Presentation.pdf`](deliverables/Team21_HPML_Final_Presentation.pdf)
 - **Experiment-tracking dashboard:** [https://api.wandb.ai/links/ccahill19-columbia-university/pi21cc6x](https://api.wandb.ai/links/ccahill19-columbia-university/pi21cc6x)
 
 The final report PDF and the presentation file are checked into the `deliverables/` folder of this repository **and** uploaded to CourseWorks.
