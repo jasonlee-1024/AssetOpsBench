@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 import json
-import argparse
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
-
 from .base import LLMBackend
+import wandb
+import os
 
 # Training config: edit these values directly in this script.
 DATA_FILE = Path("data/lmtrain_data.jsonl")
@@ -111,6 +111,18 @@ def _print_eval_report(threshold: float, metrics: dict[str, Any]) -> None:
         f"recall={metrics['recall']:.4f} "
         f"f1={metrics['f1']:.4f}"
     )
+
+    try:
+        # W&B logging
+        wandb.log({
+            "eval/threshold": threshold,
+            "eval/accuracy": metrics['accuracy'],
+            "eval/precision": metrics['precision'],
+            "eval/recall": metrics['recall'],
+            "eval/f1": metrics['f1']
+        })
+    except Exception:
+        raise ValueError("W&B logging not working")
 
 
 @dataclass
@@ -307,7 +319,8 @@ def train(
         save_strategy="epoch" if eval_ds is not None else "no",
         logging_strategy="steps",
         logging_steps=20,
-        report_to="none",
+        report_to="wandb",
+        run_name=f"classifier_{model_name}",
     )
 
     trainer = Trainer(
@@ -315,9 +328,10 @@ def train(
         args=args,
         train_dataset=train_ds,
         eval_dataset=eval_ds,
-        tokenizer=tokenizer,
         data_collator=DataCollatorWithPadding(tokenizer=tokenizer),
     )
+    # setting tokenizer after due to transformers version mismatches
+    trainer.tokenizer = tokenizer
     trainer.train()
 
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -406,6 +420,24 @@ def _run_single_route(query: str, model_path: str | Path, threshold: float) -> N
 
 def main() -> None:
     """Train by default, or run model-router inference with CLI flags."""
+    try:
+        # initializing w&b
+        wandb.init(
+            project="hpml-semester-project",
+            entity="ccahill19-columbia-university",
+            name="classifier_training",
+            config={
+                "model_name": MODEL_NAME,
+                "learning_rate": LEARNING_RATE,
+                "epochs": EPOCHS,
+                "batch_size": BATCH_SIZE,
+                "threshold": THRESHOLD,
+                "dataset": "AssestOpsBench",
+            },
+        )
+    except Exception as e:
+        print(f"W&B logging not available: {e}")
+        
     args = _build_parser().parse_args()
     if args.demo:
         _run_demo(model_path=args.model_path, threshold=args.threshold)
